@@ -19,14 +19,8 @@ class Gebruiker(db.Model):
         return f'<Gebruiker {self.gebruikersnaam}>'
 
 
-# @app.route("/")
-# def hello_world():
-#     return "<p>Hallo, Flask werkt!</p>"
-
-
 @app.route('/')
 def home():
-    # Let op: Flask zoekt automatisch in de map 'templates'
     return render_template('homepagina.html')
 
 
