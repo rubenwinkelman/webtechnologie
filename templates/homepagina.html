@@ -1,11 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Mijn Simpele Website</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            padding: 100px 0;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 <body>
-    <p>Test</p>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">MijnMerk</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="#">Home</a>
+                <a class="nav-link" href="#">Diensten</a>
+                <a class="nav-link" href="#">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Welkom op mijn website</h1>
+            <p class="lead text-muted">Een simpele, snelle en effectieve manier om je boodschap te delen.</p>
+            <a href="#aanbod" class="btn btn-primary btn-lg mt-3">Bekijk aanbod</a>
+        </div>
+    </header>
+
+    <section id="aanbod" class="py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <h3>Service A</h3>
+                        <p>Korte beschrijving van wat je hier aanbiedt. Houd het beknopt.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <h3>Service B</h3>
+                        <p>Leg uit waarom dit onderdeel zo waardevol is voor de bezoeker.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <h3>Service C</h3>
+                        <p>Een laatste overtuigend punt om de bezoeker te triggeren.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white text-center py-4">
+        <p>&copy; 2026 MijnMerk - Alle rechten voorbehouden.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
