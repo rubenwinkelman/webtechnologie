@@ -23,6 +23,10 @@ class Gebruiker(db.Model):
 def home():
     return render_template('homepagina.html')
 
+@app.route('/register')
+def register():
+    return render_template('register_page.html')
+
 @app.route('/login')
 def login():
     return render_template('login_page.html')
