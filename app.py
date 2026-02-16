@@ -28,7 +28,7 @@ def login():
         
         user = User.query.filter_by(email=email).first()
         if user and user.password == password:
-            return render_template('back/home.html')
+            return render_template('back/home.html', data=user)
             
     return render_template('login_page.html')
 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaste Lasten Planner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-primary mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1"><i class="bi bi-wallet2"></i> LastenLog</span>
+            <div class="d-flex text-white">
+                Welkom, {{ data.email }} | <a href="/logout" class="btn btn-sm btn-outline-light ms-2">Uitloggen</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-dark mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">Totaal Vaste Lasten</h5>
+                        <h2 class="display-6">€ 1.450,00</h2>
+                        <p class="card-text small text-info"><i class="bi bi-info-circle"></i> Per maand</p>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white font-weight-bold">Last Toevoegen</div>
+                    <div class="card-body">
+                        <form action="/add_expense" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Omschrijving</label>
+                                <input type="text" name="omschrijving" class="form-control" placeholder="bijv. Huur, Netflix" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Bedrag (€)</label>
+                                <input type="number" step="0.01" name="bedrag" class="form-control" placeholder="0.00" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Categorie</label>
+                                <select name="categorie" class="form-select">
+                                    <option value="wonen">Wonen</option>
+                                    <option value="abonnement">Abonnementen</option>
+                                    <option value="verzekering">Verzekeringen</option>
+                                    <option value="overig">Overig</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Toevoegen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Mijn Schema</h5>
+                        <span class="badge bg-primary">Maart 2024</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Omschrijving</th>
+                                    <th>Categorie</th>
+                                    <th>Bedrag</th>
+                                    <th>Actie</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Huur / Hypotheek</td>
+                                    <td><span class="badge rounded-pill bg-light text-dark border">Wonen</span></td>
+                                    <td>€ 950,00</td>
+                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td>Zorgverzekering</td>
+                                    <td><span class="badge rounded-pill bg-light text-dark border">Verzekering</span></td>
+                                    <td>€ 145,00</td>
+                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td>Netflix Premium</td>
+                                    <td><span class="badge rounded-pill bg-light text-dark border">Abonnement</span></td>
+                                    <td>€ 15,99</td>
+                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
