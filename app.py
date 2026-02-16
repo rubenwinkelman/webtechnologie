@@ -17,14 +17,26 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
 
+    lasten = db.relationship('Expense', backref='gebruiker', lazy=True)
+
     def __repr__(self):
         return f'<User {self.email}>'
+    
+class Expense(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    omschrijving = db.Column(db.String(100), nullable=False)
+    bedrag = db.Column(db.Float, nullable=False)
+    categorie = db.Column(db.String(50), nullable=False)
+    # Koppeling naar de User id
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 @app.route('/')
 def home():
     if session.get('logged_in') == True:
-        user = User.query.filter_by(email=session['email']).first() 
-        return render_template('back/home.html', data=user)
+        user = User.query.filter_by(id=session['user_id']).first() 
+        mijn_lasten = user.lasten 
+        totaal = sum(l.bedrag for l in mijn_lasten)
+        return render_template('back/home.html', data=user, lasten=mijn_lasten, totaal=totaal)
     else:
         return render_template('homepagina.html')
 
@@ -38,8 +50,10 @@ def login():
         if user and user.password == password:
 
             session['logged_in'] = True
-            session['email'] = email
-            return render_template('back/home.html', data=user)
+            session['user_id'] = user.id
+            mijn_lasten = user.lasten 
+            totaal = sum(l.bedrag for l in mijn_lasten)
+            return render_template('back/home.html', data=user, lasten=mijn_lasten, totaal=totaal)
             
     return render_template('login_page.html')
 
@@ -64,6 +78,18 @@ def register():
         return redirect(url_for('login'))
         
     return render_template('register_page.html')
+
+@app.route('/add_expense', methods=['POST'])
+def add_expense():
+    nieuwe_last = Expense(
+        omschrijving=request.form.get('omschrijving'),
+        bedrag=float(request.form.get('bedrag')),
+        categorie=request.form.get('categorie'),
+        user_id=session['user_id'] # De ID uit de sessie die we eerder bespraken
+    )
+    db.session.add(nieuwe_last)
+    db.session.commit()
+    return redirect(url_for('home'))
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -12,8 +12,9 @@
     <nav class="navbar navbar-dark bg-primary mb-4">
         <div class="container">
             <span class="navbar-brand mb-0 h1"><i class="bi bi-wallet2"></i> LastenLog</span>
-            <div class="d-flex text-white">
-                Welkom {{ data.first_name }} | <a href="/logout" class="btn btn-sm btn-outline-light ms-2">Uitloggen</a>
+            <div class="d-flex text-white align-items-center">
+                Welkom, {{ data.first_name }} | 
+                <a href="/logout" class="btn btn-sm btn-outline-light ms-2">Uitloggen</a>
             </div>
         </div>
     </nav>
@@ -21,16 +22,16 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <div class="card text-white bg-dark mb-3">
+                <div class="card text-white bg-dark mb-3 shadow">
                     <div class="card-body">
                         <h5 class="card-title text-secondary">Totaal Vaste Lasten</h5>
-                        <h2 class="display-6">€ 1.450,00</h2>
+                        <h2 class="display-6">€ {{ "%.2f"|format(totaal) }}</h2>
                         <p class="card-text small text-info"><i class="bi bi-info-circle"></i> Per maand</p>
                     </div>
                 </div>
 
                 <div class="card shadow-sm">
-                    <div class="card-header bg-white font-weight-bold">Last Toevoegen</div>
+                    <div class="card-header bg-white fw-bold">Last Toevoegen</div>
                     <div class="card-body">
                         <form action="/add_expense" method="POST">
                             <div class="mb-3">
@@ -44,10 +45,10 @@
                             <div class="mb-3">
                                 <label class="form-label">Categorie</label>
                                 <select name="categorie" class="form-select">
-                                    <option value="wonen">Wonen</option>
-                                    <option value="abonnement">Abonnementen</option>
-                                    <option value="verzekering">Verzekeringen</option>
-                                    <option value="overig">Overig</option>
+                                    <option value="Wonen">Wonen</option>
+                                    <option value="Abonnement">Abonnementen</option>
+                                    <option value="Verzekering">Verzekeringen</option>
+                                    <option value="Overig">Overig</option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-success w-100">Toevoegen</button>
@@ -60,7 +61,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Mijn Schema</h5>
-                        <span class="badge bg-primary">Maart 2024</span>
+                        <span class="badge bg-primary">Overzicht</span>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
@@ -69,28 +70,26 @@
                                     <th>Omschrijving</th>
                                     <th>Categorie</th>
                                     <th>Bedrag</th>
-                                    <th>Actie</th>
+                                    <th class="text-end">Actie</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for last in lasten %}
                                 <tr>
-                                    <td>Huur / Hypotheek</td>
-                                    <td><span class="badge rounded-pill bg-light text-dark border">Wonen</span></td>
-                                    <td>€ 950,00</td>
-                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                    <td>{{ last.omschrijving }}</td>
+                                    <td><span class="badge rounded-pill bg-light text-dark border">{{ last.categorie }}</span></td>
+                                    <td>€ {{ "%.2f"|format(last.bedrag) }}</td>
+                                    <td class="text-end">
+                                        <a href="/delete/{{ last.id }}" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
                                 </tr>
+                                {% else %}
                                 <tr>
-                                    <td>Zorgverzekering</td>
-                                    <td><span class="badge rounded-pill bg-light text-dark border">Verzekering</span></td>
-                                    <td>€ 145,00</td>
-                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                    <td colspan="4" class="text-center text-muted py-4">Nog geen vaste lasten toegevoegd.</td>
                                 </tr>
-                                <tr>
-                                    <td>Netflix Premium</td>
-                                    <td><span class="badge rounded-pill bg-light text-dark border">Abonnement</span></td>
-                                    <td>€ 15,99</td>
-                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
