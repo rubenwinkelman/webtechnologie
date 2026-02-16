@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy 
 
 app = Flask(__name__)
+
+app.secret_key = 'super_geheim_wachtwoord_123'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -30,9 +32,18 @@ def login():
         
         user = User.query.filter_by(email=email).first()
         if user and user.password == password:
+
+            session['logged_in'] = True
+            session['email'] = email
             return render_template('back/home.html', data=user)
             
     return render_template('login_page.html')
+
+@app.route('/logout')
+def logout():
+    # SESSIE LEEGMAKEN
+    session.clear()
+    return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
