@@ -22,7 +22,11 @@ class User(db.Model):
 
 @app.route('/')
 def home():
-    return render_template('homepagina.html')
+    if session.get('logged_in') == True:
+        user = User.query.filter_by(email=session['email']).first() 
+        return render_template('back/home.html', data=user)
+    else:
+        return render_template('homepagina.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
