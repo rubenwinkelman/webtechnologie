@@ -27,9 +27,8 @@ def login():
         password = request.form.get('password')
         
         user = User.query.filter_by(email=email).first()
-        
         if user and user.password == password:
-            return redirect(url_for('home'))
+            return render_template('back/home.html')
             
     return render_template('login_page.html')
 
