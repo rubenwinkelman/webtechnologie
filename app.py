@@ -10,6 +10,8 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
 
@@ -36,9 +38,11 @@ def login():
 def register():
     if request.method == 'POST':
         email = request.form.get('email')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
         password = request.form.get('password')
         
-        nieuwe_gebruiker = User(email=email, password=password)
+        nieuwe_gebruiker = User(email=email, password=password, first_name=first_name, last_name=last_name)
         db.session.add(nieuwe_gebruiker)
         db.session.commit()
         
