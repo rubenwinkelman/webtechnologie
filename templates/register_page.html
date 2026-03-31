@@ -6,6 +6,7 @@
     <title>Registreren</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Centreert de registratiekaart midden op de pagina. */
         body {
             background-color: #f0f2f5;
             height: 100vh;
@@ -13,6 +14,7 @@
             align-items: center;
             justify-content: center;
         }
+        /* De registratiekaart is iets breder dan de login-kaart vanwege extra velden. */
         .register-card {
             width: 100%;
             max-width: 450px; /* Iets breder voor extra velden */
@@ -26,10 +28,12 @@
 </head>
 <body>
 
+    <!-- Hoofdkaart voor het registratieformulier. -->
     <div class="card register-card">
         <div class="card-body">
             <h3 class="text-center mb-4">Account aanmaken</h3>
             
+            <!-- Dit formulier maakt een nieuwe gebruiker aan via de register-route. -->
             <form method="POST">
                 <div class="mb-3">
                     <label for="email" class="form-label">E-mailadres</label>
@@ -57,8 +61,10 @@
                 </div>
             </form>
 
+            <!-- Deze lijn scheidt het formulier van de link naar inloggen. -->
             <hr class="my-4">
 
+            <!-- Extra hulptekst voor gebruikers die al een account hebben. -->
             <div class="text-center">
                 <p class="small">Heb je al een account? <a href="/login" class="text-decoration-none text-success fw-bold">Log hier in</a></p>
             </div>
