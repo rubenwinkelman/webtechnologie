@@ -3,71 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn Simpele Website</title>
+    <title>LastenLog | Schoolproject vaste lasten</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Deze class geeft de bovenste introductiesectie extra ruimte en een lichte achtergrond. */
-        .hero-section {
-            padding: 100px 0;
-            background-color: #f8f9fa;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/hanze-theme.css') }}">
 </head>
 <body>
+    <div class="site-wrapper">
+        <!-- Deze navigatie geeft bezoekers snel toegang tot home, login en registratie. -->
+        <header class="site-nav">
+            <div class="container-tight">
+                <div class="nav-panel">
+                    <a href="{{ url_for('home') }}" class="brand-lockup">
+                        <span class="brand-mark"></span>
+                        <span class="brand-text">
+                            <strong>LastenLog</strong>
+                            <span>Budgetdashboard</span>
+                        </span>
+                    </a>
 
-    <!-- Hoofdnavigatie van de publieke homepage. -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">MijnMerk</a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link active" href="#">Home</a>
-                <a class="nav-link" href="#">Diensten</a>
-                <a class="nav-link" href="#">Contact</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero-sectie: dit is het eerste blok dat bezoekers zien. -->
-    <header class="hero-section text-center">
-        <div class="container">
-            <h1 class="display-4 fw-bold">Welkom op mijn website</h1>
-            <p class="lead text-muted">Een simpele, snelle en effectieve manier om je boodschap te delen.</p>
-            <a href="#aanbod" class="btn btn-primary btn-lg mt-3">Bekijk aanbod</a>
-        </div>
-    </header>
-
-    <!-- Hier tonen we drie voorbeeldservices of onderdelen van het aanbod. -->
-    <section id="aanbod" class="py-5">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <div class="p-3">
-                        <h3>Service A</h3>
-                        <p>Korte beschrijving van wat je hier aanbiedt. Houd het beknopt.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="p-3">
-                        <h3>Service B</h3>
-                        <p>Leg uit waarom dit onderdeel zo waardevol is voor de bezoeker.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="p-3">
-                        <h3>Service C</h3>
-                        <p>Een laatste overtuigend punt om de bezoeker te triggeren.</p>
+                    <div class="nav-actions">
+                        <a href="{{ url_for('login') }}" class="btn-outline-accent">Inloggen</a>
+                        <a href="{{ url_for('register') }}" class="btn-accent">Registreren</a>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </header>
 
-    <!-- De footer bevat afsluitende informatie onderaan de pagina. -->
-    <footer class="bg-dark text-white text-center py-4">
-        <p>&copy; 2026 MijnMerk - Alle rechten voorbehouden.</p>
-    </footer>
+        <main>
+            <!-- De hero laat in een oogopslag zien waar de website voor bedoeld is. -->
+            <section class="public-hero">
+                <div class="container-tight">
+                    <div class="hero-grid">
+                        <article class="hero-main">
+                            <p class="eyebrow">Vaste lasten overzicht</p>
+                            <h1 class="hero-title">Een dashboard voor je maandelijkse lasten.</h1>
+                            <p class="hero-copy">
+                                Vaste lasten overzicht
+                                
+                            </p>
 
-    <!-- Bootstrap JavaScript activeert interactieve onderdelen zoals menu's. -->
+                            <div class="hero-actions">
+                                <a href="{{ url_for('register') }}" class="btn-accent">
+                                    <i class="bi bi-person-plus"></i>
+                                    Naar registreren
+                                </a>
+                                <a href="{{ url_for('login') }}" class="btn-outline-accent">
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    Naar inloggen
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- De footer sluit de pagina rustig af met korte kerninformatie. -->
+        <footer class="footer-bar">
+            <div class="container-tight footer-inline">
+                <span>LastenLog - schoolproject voor het beheren van vaste lasten</span>
+                <span></span>
+            </div>
+        </footer>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

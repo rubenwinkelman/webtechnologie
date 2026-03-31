@@ -3,56 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inloggen</title>
+    <title>Inloggen | LastenLog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Centreert de login-kaart midden op het scherm. */
-        body {
-            background-color: #f0f2f5;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        /* Deze kaart groepeert alle onderdelen van het loginformulier. */
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-            padding: 2rem;
-            border: none;
-            border-radius: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/hanze-theme.css') }}">
 </head>
 <body>
+    <main class="auth-page">
+        <div class="container-tight">
+            <div class="justify-content-center">
+                <!-- Deze kaart bevat alleen de onderdelen die nodig zijn om in te loggen. -->
+                <section class="auth-card mx-auto" style="max-width: 32rem;">
+                    <a href="{{ url_for('home') }}" class="brand-lockup mb-4">
+                        <span class="brand-mark"></span>
+                        <span class="brand-text">
+                            <strong>LastenLog</strong>
+                            <span>Inloggen</span>
+                        </span>
+                    </a>
 
-    <!-- Hoofdkaart waarin het inlogformulier staat. -->
-    <div class="card login-card">
-        <div class="card-body">
-            <h3 class="text-center mb-4">Inloggen</h3>
-            
-            <!-- Dit formulier verstuurt de ingevoerde gegevens naar de huidige route. -->
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="email" class="form-label">E-mailadres</label>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="naam@voorbeeld.nl" required>
-                </div>
+                    <h1 class="section-title mb-3">Inloggen</h1>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Wachtwoord</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="••••••••" required>
-                </div>
+                    {% if error %}
+                    <div class="alert-soft mb-4">{{ error }}</div>
+                    {% endif %}
 
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="remember">
-                    <label class="form-check-label" border for="remember">Onthoud mij</label>
-                </div>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-mailadres</label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="naam@student.nl" required>
+                        </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">Log in</button>
-                </div>
-            </form>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Wachtwoord</label>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Voer je wachtwoord in" required>
+                        </div>
 
-            <!-- Visuele scheidingslijn onder het formulier. -->
-            <hr class="my-4">
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn-accent border-0">Inloggen</button>
+                            <a href="{{ url_for('register') }}" class="btn-outline-accent">Nog geen account? Registreren</a>
+                        </div>
+                    </form>
+                </section>
+            </div> 
+        </div>
+    </main>
+</body>
+</html>
