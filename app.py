@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy 
+from werkzeug.security import check_password_hash, generate_password_hash
 import json
 
 app = Flask(__name__)
@@ -14,7 +15,8 @@ class User(db.Model):
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
+    # Een gehasht wachtwoord heeft meer tekens nodig dan een gewoon wachtwoord.
+    password = db.Column(db.String(255), nullable=False)
     salaris = db.Column(db.Float, default=0.0)
     lasten = db.relationship('Expense', backref='gebruiker', lazy=True)
 
@@ -28,6 +30,20 @@ class Expense(db.Model):
 
 with app.app_context():
     db.create_all()
+
+
+# Controleer of een opgeslagen wachtwoord al een Werkzeug-hash is.
+def is_gehasht_wachtwoord(opgeslagen_wachtwoord):
+    return opgeslagen_wachtwoord.startswith('scrypt:') or opgeslagen_wachtwoord.startswith('pbkdf2:')
+
+
+# Vergelijk het ingevoerde wachtwoord met een gehasht of oud plaintext wachtwoord.
+def controleer_wachtwoord(user, ingevoerd_wachtwoord):
+    if is_gehasht_wachtwoord(user.password):
+        return check_password_hash(user.password, ingevoerd_wachtwoord)
+
+    # Ondersteun tijdelijk oude accounts met plaintext wachtwoorden.
+    return user.password == ingevoerd_wachtwoord
 
 @app.route('/')
 def home():
@@ -91,12 +107,19 @@ def login():
         password = request.form.get('password')
         
         user = User.query.filter_by(email=email).first()
-        if user and user.password == password:
+        if user and controleer_wachtwoord(user, password):
+            # Zet een oud plaintext wachtwoord direct om naar een veilige hash.
+            if not is_gehasht_wachtwoord(user.password):
+                user.password = generate_password_hash(password)
+                db.session.commit()
+
             session['logged_in'] = True
             session['user_id'] = user.id
             return redirect(url_for('home'))
             
-    return render_template('login_page.html')
+        return render_template('login_page.html', error='De ingevoerde gegevens kloppen niet.')
+            
+    return render_template('login_page.html', error=None)
 
 @app.route('/logout')
 def logout():
@@ -113,13 +136,21 @@ def register():
         
         bestaande_user = User.query.filter_by(email=email).first()
         if not bestaande_user:
-            nieuwe_gebruiker = User(email=email, password=password, first_name=first_name, last_name=last_name)
+            gehasht_wachtwoord = generate_password_hash(password)
+            nieuwe_gebruiker = User(
+                email=email,
+                password=gehasht_wachtwoord,
+                first_name=first_name,
+                last_name=last_name
+            )
             db.session.add(nieuwe_gebruiker)
             db.session.commit()
+        else:
+            return render_template('register_page.html', error='Dit e-mailadres wordt al gebruikt.')
         
         return redirect(url_for('login'))
         
-    return render_template('register_page.html')
+    return render_template('register_page.html', error=None)
 
 @app.route('/add_expense', methods=['POST'])
 def add_expense():
