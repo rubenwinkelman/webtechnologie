@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -14,43 +14,46 @@
         <div class="container">
             <span class="navbar-brand mb-0 h1"><i class="bi bi-wallet2"></i> LastenLog</span>
             <div class="d-flex text-white align-items-center">
-                Welkom, {{ data.first_name }} | 
+                Welkom, {{ data.first_name }} |
                 <a href="/logout" class="btn btn-sm btn-outline-light ms-3">Uitloggen</a>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card text-white bg-success mb-3 shadow-sm h-100">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h6 class="card-title text-light opacity-75">Netto Maandsalaris</h6>
-                        <h2 class="display-6 mb-0">€ {{ "%.2f"|format(salaris) }}</h2>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#salarisModal" class="text-white small text-decoration-none mt-2">
-                            <i class="bi bi-pencil-square"></i> Bedrag aanpassen
-                        </a>
-                    </div>
-                </div>
+        <!-- Dit blok laat in een oogopslag zien wat er maandelijks binnenkomt, uitgaat en overblijft. -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white fw-bold">
+                <i class="bi bi-calculator text-primary"></i> Maandoverzicht
             </div>
-
-            <div class="col-md-4">
-                <div class="card text-white bg-dark mb-3 shadow-sm h-100">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h6 class="card-title text-secondary">Totaal Vaste Lasten (p/m)</h6>
-                        <h2 class="display-6 mb-0">€ {{ "%.2f"|format(totaal) }}</h2>
-                        <p class="card-text small text-info mt-2 mb-0"><i class="bi bi-info-circle"></i> Omgerekend naar maandbasis</p>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100 bg-light">
+                            <div class="small text-muted mb-2">Netto maandsalaris</div>
+                            <div class="fs-3 fw-semibold">&euro; {{ "%.2f"|format(salaris) }}</div>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#salarisModal" class="small text-decoration-none mt-2 d-inline-block">
+                                <i class="bi bi-pencil-square"></i> Bedrag aanpassen
+                            </a>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="col-md-4">
-                <div class="card text-dark bg-white border-primary border-2 mb-3 shadow-sm h-100">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h6 class="card-title text-primary">Vrij te besteden (Over)</h6>
-                        <h2 class="display-6 mb-0 text-primary">€ {{ "%.2f"|format(salaris - totaal) }}</h2>
-                        <p class="card-text small text-muted mt-2 mb-0"><i class="bi bi-cash-coin"></i> Voor boodschappen, sparen, etc.</p>
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100 bg-light">
+                            <div class="small text-muted mb-2">Totale lasten per maand</div>
+                            <div class="fs-3 fw-semibold">&euro; {{ "%.2f"|format(totaal) }}</div>
+                            <div class="small text-muted mt-2">Alle bedragen zijn omgerekend naar maandbasis.</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100 bg-light">
+                            <div class="small text-muted mb-2">Over per maand</div>
+                            <div class="fs-3 fw-semibold {% if resterend < 0 %}text-danger{% else %}text-success{% endif %}">
+                                &euro; {{ "%.2f"|format(resterend) }}
+                            </div>
+                            <div class="small text-muted mt-2">Salaris min vaste lasten.</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,7 +62,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white fw-bold"><i class="bi bi-plus-circle text-success"></i> Last Toevoegen</div>
+                    <div class="card-header bg-white fw-bold"><i class="bi bi-plus-circle text-success"></i> Last toevoegen</div>
                     <div class="card-body">
                         <form action="/add_expense" method="POST">
                             <div class="mb-3">
@@ -68,7 +71,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Bedrag (€)</label>
+                                    <label class="form-label">Bedrag (&euro;)</label>
                                     <input type="number" step="0.01" name="bedrag" class="form-control" placeholder="0.00" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
@@ -80,7 +83,7 @@
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Categorie</label>
                                 <input list="categorie-opties" name="categorie" class="form-control" placeholder="Kies of typ zelf..." required>
@@ -102,7 +105,7 @@
 
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white fw-bold"><i class="bi bi-pie-chart text-primary"></i> Uitgaven per Categorie (p/m)</div>
+                    <div class="card-header bg-white fw-bold"><i class="bi bi-pie-chart text-primary"></i> Uitgaven per categorie (p/m)</div>
                     <div class="card-body">
                         <canvas id="uitgavenGrafiek" style="max-height: 250px;"></canvas>
                     </div>
@@ -110,8 +113,8 @@
 
                 <div class="card shadow-sm mb-5">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Mijn Schema</h5>
-                        <span class="badge bg-primary">Overzicht</span>
+                        <h5 class="mb-0">Mijn schema</h5>
+                        <span class="badge bg-primary">Totaal per maand zichtbaar</span>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -121,16 +124,18 @@
                                     <th>Categorie</th>
                                     <th>Frequentie</th>
                                     <th>Bedrag</th>
+                                    <th>Per maand</th>
                                     <th class="text-end">Actie</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for last in lasten %}
+                                {% for last in lasten_overzicht %}
                                 <tr>
                                     <td class="fw-medium">{{ last.omschrijving }}</td>
                                     <td><span class="badge rounded-pill bg-light text-dark border">{{ last.categorie }}</span></td>
                                     <td><small class="text-muted">{{ last.frequentie }}</small></td>
-                                    <td>€ {{ "%.2f"|format(last.bedrag) }}</td>
+                                    <td>&euro; {{ "%.2f"|format(last.bedrag) }}</td>
+                                    <td class="fw-semibold">&euro; {{ "%.2f"|format(last.maand_bedrag) }}</td>
                                     <td class="text-end">
                                         <a href="/delete/{{ last.id }}" class="btn btn-sm btn-outline-danger">
                                             <i class="bi bi-trash"></i>
@@ -139,13 +144,22 @@
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
+                                    <td colspan="6" class="text-center text-muted py-4">
                                         <i class="bi bi-journal-x fs-3 d-block mb-2"></i>
                                         Nog geen vaste lasten toegevoegd.
                                     </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
+                            {% if lasten_overzicht %}
+                            <tfoot class="table-light">
+                                <tr>
+                                    <th colspan="4" class="text-end">Totaal per maand</th>
+                                    <th>&euro; {{ "%.2f"|format(totaal) }}</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                            {% endif %}
                         </table>
                     </div>
                 </div>
@@ -158,11 +172,11 @@
             <div class="modal-content">
                 <form action="/update_salaris" method="POST">
                     <div class="modal-header">
-                        <h5 class="modal-title">Maandsalaris Aanpassen</h5>
+                        <h5 class="modal-title">Maandsalaris aanpassen</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <label class="form-label">Nieuw Netto Salaris (€)</label>
+                        <label class="form-label">Nieuw netto salaris (&euro;)</label>
                         <input type="number" step="0.01" name="salaris" class="form-control" value="{{ salaris }}" required>
                     </div>
                     <div class="modal-footer">
@@ -175,13 +189,13 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         const ctx = document.getElementById('uitgavenGrafiek').getContext('2d');
         const chartData = {
             labels: {{ grafiek_labels | safe }},
             datasets: [{
-                label: 'Uitgaven in € (per maand)',
+                label: 'Uitgaven in euro per maand',
                 data: {{ grafiek_data | safe }},
                 backgroundColor: [
                     'rgba(54, 162, 235, 0.7)',

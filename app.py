@@ -32,6 +32,18 @@ with app.app_context():
     db.create_all()
 
 
+# Reken elk bedrag om naar een maandbedrag zodat alles eerlijk opgeteld kan worden.
+def bereken_maandbedrag(last):
+    maand_bedrag = last.bedrag
+
+    if last.frequentie == 'Kwartaal':
+        maand_bedrag = last.bedrag / 3
+    elif last.frequentie == 'Jaarlijks':
+        maand_bedrag = last.bedrag / 12
+
+    return maand_bedrag
+
+
 # Controleer of een opgeslagen wachtwoord al een Werkzeug-hash is.
 def is_gehasht_wachtwoord(opgeslagen_wachtwoord):
     return opgeslagen_wachtwoord.startswith('scrypt:') or opgeslagen_wachtwoord.startswith('pbkdf2:')
@@ -56,6 +68,7 @@ def home():
         mijn_lasten = user.lasten 
         totaal_per_maand = 0
         kosten_per_categorie = {}
+        lasten_overzicht = []
 
         # Lijst om unieke categorieën in de juiste volgorde (meest recent) op te slaan
         recente_categorieen = []
@@ -64,13 +77,18 @@ def home():
                 recente_categorieen.append(last.categorie)
 
         for last in mijn_lasten:
-            maand_bedrag = last.bedrag
-            if last.frequentie == 'Kwartaal':
-                maand_bedrag = last.bedrag / 3
-            elif last.frequentie == 'Jaarlijks':
-                maand_bedrag = last.bedrag / 12
+            maand_bedrag = bereken_maandbedrag(last)
             
             totaal_per_maand += maand_bedrag
+
+            lasten_overzicht.append({
+                'id': last.id,
+                'omschrijving': last.omschrijving,
+                'categorie': last.categorie,
+                'frequentie': last.frequentie,
+                'bedrag': last.bedrag,
+                'maand_bedrag': maand_bedrag
+            })
             
             if last.categorie in kosten_per_categorie:
                 kosten_per_categorie[last.categorie] += maand_bedrag
@@ -92,7 +110,9 @@ def home():
         return render_template('back/home.html', 
                                data=user, 
                                lasten=mijn_lasten, 
+                               lasten_overzicht=lasten_overzicht,
                                totaal=totaal_per_maand,
+                               resterend=user.salaris - totaal_per_maand,
                                salaris=user.salaris,
                                grafiek_labels=json.dumps(grafiek_labels),
                                grafiek_data=json.dumps(grafiek_data),
