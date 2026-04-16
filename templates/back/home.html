@@ -4,227 +4,393 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LastenLog - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/hanze-theme.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-light">
-
-    <nav class="navbar navbar-dark bg-primary mb-4 shadow-sm">
-        <div class="container">
-            <span class="navbar-brand mb-0 h1"><i class="bi bi-wallet2"></i> LastenLog</span>
-            <div class="d-flex text-white align-items-center">
-                Welkom, {{ data.first_name }} |
-                <a href="/logout" class="btn btn-sm btn-outline-light ms-3">Uitloggen</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container">
-        <!-- Dit blok laat in een oogopslag zien wat er maandelijks binnenkomt, uitgaat en overblijft. -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white fw-bold">
-                <i class="bi bi-calculator text-primary"></i> Maandoverzicht
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="border rounded-3 p-3 h-100 bg-light">
-                            <div class="small text-muted mb-2">Netto maandsalaris</div>
-                            <div class="fs-3 fw-semibold">&euro; {{ "%.2f"|format(salaris) }}</div>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#salarisModal" class="small text-decoration-none mt-2 d-inline-block">
-                                <i class="bi bi-pencil-square"></i> Bedrag aanpassen
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="border rounded-3 p-3 h-100 bg-light">
-                            <div class="small text-muted mb-2">Totale lasten per maand</div>
-                            <div class="fs-3 fw-semibold">&euro; {{ "%.2f"|format(totaal) }}</div>
-                            <div class="small text-muted mt-2">Alle bedragen zijn omgerekend naar maandbasis.</div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="border rounded-3 p-3 h-100 bg-light">
-                            <div class="small text-muted mb-2">Over per maand</div>
-                            <div class="fs-3 fw-semibold {% if resterend < 0 %}text-danger{% else %}text-success{% endif %}">
-                                &euro; {{ "%.2f"|format(resterend) }}
-                            </div>
-                            <div class="small text-muted mt-2">Salaris min vaste lasten.</div>
-                        </div>
+<body>
+    <div class="site-wrapper">
+        
+        <header class="site-nav mb-4">
+            <div class="container">
+                <div class="nav-panel d-flex justify-content-between align-items-center w-100">
+                    <a href="/" class="brand-lockup text-decoration-none">
+                        <span class="brand-mark"></span>
+                        <span class="brand-text">
+                            <strong>LastenLog</strong>
+                            <span>Dashboard</span>
+                        </span>
+                    </a>
+                    <div class="nav-actions d-flex align-items-center">
+                        <span class="me-3 fw-medium text-dark">Welkom, {{ data.first_name }}</span>
+                        <a href="/logout" class="btn-outline-accent btn-sm">Uitloggen</a>
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white fw-bold"><i class="bi bi-plus-circle text-success"></i> Last toevoegen</div>
-                    <div class="card-body">
-                        <form action="/add_expense" method="POST">
-                            <div class="mb-3">
-                                <label class="form-label">Omschrijving</label>
-                                <input type="text" name="omschrijving" class="form-control" placeholder="bijv. Huur, Netflix" required>
+        <main class="container">
+            <div class="card shadow-sm border-0 mb-4 rounded-3">
+                <div class="card-header bg-white border-bottom-0 pt-3 pb-0 fw-bold">
+                    <i class="bi bi-calculator text-primary"></i> Maandoverzicht
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="border rounded-3 p-3 h-100 bg-light">
+                                <div class="small text-muted mb-2">Netto maandsalaris</div>
+                                <div class="fs-3 fw-semibold">&euro; {{ "%.2f"|format(salaris) }}</div>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#salarisModal" class="small text-decoration-none mt-2 d-inline-block text-primary">
+                                    <i class="bi bi-pencil-square"></i> Bedrag aanpassen
+                                </a>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Bedrag (&euro;)</label>
-                                    <input type="number" step="0.01" name="bedrag" class="form-control" placeholder="0.00" required>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded-3 p-3 h-100 bg-light">
+                                <div class="small text-muted mb-2">Totale lasten per maand</div>
+                                <div class="fs-3 fw-semibold">&euro; {{ "%.2f"|format(totaal) }}</div>
+                                <div class="small text-muted mt-2">Alle bedragen zijn omgerekend naar maandbasis.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded-3 p-3 h-100 bg-light">
+                                <div class="small text-muted mb-2">Over per maand</div>
+                                <div class="fs-3 fw-semibold {% if resterend < 0 %}text-danger{% else %}text-success{% endif %}">
+                                    &euro; {{ "%.2f"|format(resterend) }}
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Frequentie</label>
-                                    <select name="frequentie" class="form-select">
-                                        <option value="Maandelijks">Maandelijks</option>
-                                        <option value="Kwartaal">Per kwartaal</option>
-                                        <option value="Jaarlijks">Jaarlijks</option>
-                                    </select>
-                                </div>
+                                <div class="small text-muted mt-2">Salaris min vaste lasten.</div>
                             </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Categorie</label>
-                                <input list="categorie-opties" name="categorie" class="form-control" placeholder="Kies of typ zelf..." required>
-                                <datalist id="categorie-opties">
-                                    <option value="Wonen">
-                                    <option value="Abonnement">
-                                    <option value="Boodschappen">
-                                    {% for cat in eigen_categorieen %}
-                                    <option value="{{ cat }}">
-                                    {% endfor %}
-                                </datalist>
-                                <div class="form-text">Kies uit de lijst of typ een eigen categorie in.</div>
-                            </div>
-                            <button type="submit" class="btn btn-success w-100">Toevoegen</button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-8">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white fw-bold"><i class="bi bi-pie-chart text-primary"></i> Uitgaven per categorie (p/m)</div>
-                    <div class="card-body">
-                        <canvas id="uitgavenGrafiek" style="max-height: 250px;"></canvas>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 mb-4 rounded-3">
+                        <div class="card-header bg-white border-bottom-0 pt-3 pb-0 fw-bold">
+                            <i class="bi bi-plus-circle text-success"></i> Last toevoegen
+                        </div>
+                        <div class="card-body">
+                            <form action="/add_expense" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small fw-bold">Omschrijving</label>
+                                    <input type="text" name="omschrijving" class="form-control bg-light border-0" placeholder="bijv. Huur, Netflix" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label text-muted small fw-bold">Bedrag (&euro;)</label>
+                                        <input type="number" step="0.01" name="bedrag" class="form-control bg-light border-0" placeholder="0.00" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label text-muted small fw-bold">Frequentie</label>
+                                        <select name="frequentie" class="form-select bg-light border-0">
+                                            <option value="Maandelijks">Maandelijks</option>
+                                            <option value="Kwartaal">Per kwartaal</option>
+                                            <option value="Jaarlijks">Jaarlijks</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label text-muted small fw-bold">Categorie</label>
+                                    <input list="categorie-opties" name="categorie" class="form-control bg-light border-0" placeholder="Kies of typ zelf..." required>
+                                    <datalist id="categorie-opties">
+                                        <option value="Wonen">
+                                        <option value="Abonnement">
+                                        <option value="Boodschappen">
+                                        {% for cat in eigen_categorieen %}
+                                        <option value="{{ cat }}">
+                                        {% endfor %}
+                                    </datalist>
+                                    <div class="form-text small">Kies uit de lijst of typ een eigen in.</div>
+                                </div>
+                                <button type="submit" class="btn-accent w-100 border-0">Toevoegen</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card shadow-sm mb-5">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Mijn schema</h5>
-                        <span class="badge bg-primary">Totaal per maand zichtbaar</span>
+                <div class="col-md-8">
+                    
+                    <div class="card shadow-sm border-0 mb-4 rounded-3">
+                        <div class="card-header bg-white border-bottom-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
+                            <span class="fw-bold"><i class="bi bi-pie-chart text-primary"></i> Uitgaven (p/m)</span>
+                            
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" id="btnTaart" class="btn btn-accent border-0" onclick="tekenGrafiek('pie')">
+                                    <i class="bi bi-pie-chart-fill me-1"></i> Taart
+                                </button>
+                                <button type="button" id="btnStaaf" class="btn btn-outline-accent border-0" onclick="tekenGrafiek('bar')">
+                                    <i class="bi bi-bar-chart-fill me-1"></i> Staaf
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body position-relative" style="height: 350px; width: 100%;">
+                            <canvas id="uitgavenGrafiek"></canvas>
+                        </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Omschrijving</th>
-                                    <th>Categorie</th>
-                                    <th>Frequentie</th>
-                                    <th>Bedrag</th>
-                                    <th>Per maand</th>
-                                    <th class="text-end">Actie</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for last in lasten_overzicht %}
-                                <tr>
-                                    <td class="fw-medium">{{ last.omschrijving }}</td>
-                                    <td><span class="badge rounded-pill bg-light text-dark border">{{ last.categorie }}</span></td>
-                                    <td><small class="text-muted">{{ last.frequentie }}</small></td>
-                                    <td>&euro; {{ "%.2f"|format(last.bedrag) }}</td>
-                                    <td class="fw-semibold">&euro; {{ "%.2f"|format(last.maand_bedrag) }}</td>
-                                    <td class="text-end">
-                                        <a href="/delete/{{ last.id }}" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        <i class="bi bi-journal-x fs-3 d-block mb-2"></i>
-                                        Nog geen vaste lasten toegevoegd.
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            {% if lasten_overzicht %}
-                            <tfoot class="table-light">
-                                <tr>
-                                    <th colspan="4" class="text-end">Totaal per maand</th>
-                                    <th>&euro; {{ "%.2f"|format(totaal) }}</th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
+
+                    {% set namespace = namespace(heeft_bundels=false) %}
+                    {% for cat, info in categorie_info.items() %}
+                        {% if info.aantal > 1 %}
+                            {% set namespace.heeft_bundels = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if namespace.heeft_bundels %}
+                    <h5 class="mb-3 fw-bold fs-6 text-dark">Bundel Overzicht</h5>
+                    <div class="row mb-4">
+                        {% for cat, info in categorie_info.items() %}
+                            {% if info.aantal > 1 %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+                                    <div class="card-body d-flex align-items-center">
+                                        <div class="bg-light text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                            <i class="bi bi-tags fs-5"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0 fw-bold">{{ cat }}</h6>
+                                            <small class="text-muted">{{ info.aantal }} items</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="fs-5 fw-semibold text-dark">&euro; {{ "%.2f"|format(info.totaal) }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {% endif %}
-                        </table>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="card shadow-sm border-0 mb-5 rounded-3 overflow-hidden">
+                        <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
+                            <h5 class="mb-0 fw-bold fs-6">Mijn schema</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="border-0 text-muted small">Omschrijving</th>
+                                        <th class="border-0 text-muted small">Categorie</th>
+                                        <th class="border-0 text-muted small">Frequentie</th>
+                                        <th class="border-0 text-muted small">Bedrag</th>
+                                        <th class="border-0 text-muted small">Per maand</th>
+                                        <th class="border-0 text-end">Actie</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for last in lasten_overzicht %}
+                                    <tr>
+                                        <td class="fw-medium border-light">{{ last.omschrijving }}</td>
+                                        <td class="border-light"><span class="badge rounded-pill bg-light text-dark border">{{ last.categorie }}</span></td>
+                                        <td class="border-light"><small class="text-muted">{{ last.frequentie }}</small></td>
+                                        <td class="border-light">&euro; {{ "%.2f"|format(last.bedrag) }}</td>
+                                        <td class="fw-semibold border-light">&euro; {{ "%.2f"|format(last.maand_bedrag) }}</td>
+                                        <td class="text-end border-light text-nowrap">
+                                            
+                                            <button type="button" class="btn btn-sm btn-primary shadow-sm me-1 btn-bewerk" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#bewerkModal"
+                                                    data-id="{{ last.id }}"
+                                                    data-oms="{{ last.omschrijving|e }}"
+                                                    data-bedrag="{{ last.bedrag }}"
+                                                    data-freq="{{ last.frequentie }}"
+                                                    data-cat="{{ last.categorie|e }}"
+                                                    title="Bewerken">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            
+                                            <a href="/delete/{{ last.id }}" class="btn btn-sm btn-danger shadow-sm" title="Verwijderen">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                            </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-5 border-light">
+                                            <i class="bi bi-journal-x fs-3 d-block mb-2 text-secondary"></i>
+                                            Nog geen vaste lasten toegevoegd.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                {% if lasten_overzicht %}
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <th colspan="4" class="text-end border-0">Totaal per maand</th>
+                                        <th class="border-0">&euro; {{ "%.2f"|format(totaal) }}</th>
+                                        <th class="border-0"></th>
+                                    </tr>
+                                </tfoot>
+                                {% endif %}
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <div class="modal fade" id="salarisModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content border-0 shadow">
                 <form action="/update_salaris" method="POST">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Maandsalaris aanpassen</h5>
+                    <div class="modal-header border-light">
+                        <h5 class="modal-title fw-bold">Maandsalaris aanpassen</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <label class="form-label">Nieuw netto salaris (&euro;)</label>
-                        <input type="number" step="0.01" name="salaris" class="form-control" value="{{ salaris }}" required>
+                        <label class="form-label text-muted small fw-bold">Nieuw netto salaris (&euro;)</label>
+                        <input type="number" step="0.01" name="salaris" class="form-control bg-light border-0" value="{{ salaris }}" required>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                        <button type="submit" class="btn btn-success">Opslaan</button>
+                    <div class="modal-footer border-light">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuleren</button>
+                        <button type="submit" class="btn-accent border-0 px-4">Opslaan</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="modal fade" id="bewerkModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <form id="bewerkForm" method="POST">
+                    <div class="modal-header border-light">
+                        <h5 class="modal-title fw-bold">Last bewerken</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">Omschrijving</label>
+                            <input type="text" name="omschrijving" id="bewerk_omschrijving" class="form-control bg-light border-0" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted small fw-bold">Bedrag (&euro;)</label>
+                                <input type="number" step="0.01" name="bedrag" id="bewerk_bedrag" class="form-control bg-light border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted small fw-bold">Frequentie</label>
+                                <select name="frequentie" id="bewerk_frequentie" class="form-select bg-light border-0">
+                                    <option value="Maandelijks">Maandelijks</option>
+                                    <option value="Kwartaal">Per kwartaal</option>
+                                    <option value="Jaarlijks">Jaarlijks</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">Categorie</label>
+                            <input list="categorie-opties" name="categorie" id="bewerk_categorie" class="form-control bg-light border-0" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-light">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuleren</button>
+                        <button type="submit" class="btn-accent border-0 px-4">Opslaan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <script id="chartDataLabels" type="application/json">{{ grafiek_labels | safe }}</script>
+    <script id="chartDataWaarden" type="application/json">{{ grafiek_data | safe }}</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const ctx = document.getElementById('uitgavenGrafiek').getContext('2d');
-        const chartData = {
-            labels: {{ grafiek_labels | safe }},
-            datasets: [{
-                label: 'Uitgaven in euro per maand',
-                data: {{ grafiek_data | safe }},
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
-                    'rgba(255, 159, 64, 0.7)',
-                    'rgba(199, 199, 199, 0.7)',
-                    'rgba(83, 102, 255, 0.7)',
-                    'rgba(40, 159, 64, 0.7)',
-                    'rgba(210, 199, 199, 0.7)'
-                ],
-                borderWidth: 1
-            }]
-        };
+        let huidigeGrafiek; 
 
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: chartData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                    }
+        const dataLabels = JSON.parse(document.getElementById('chartDataLabels').textContent);
+        const dataWaarden = JSON.parse(document.getElementById('chartDataWaarden').textContent);
+        
+        const kleuren = [
+            'rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)',
+            'rgba(255, 206, 86, 0.7)', 'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)',
+            'rgba(199, 199, 199, 0.7)'
+        ];
+
+        function tekenGrafiek(type) {
+            if (huidigeGrafiek) {
+                huidigeGrafiek.destroy(); 
+            }
+
+            const btnTaart = document.getElementById('btnTaart');
+            const btnStaaf = document.getElementById('btnStaaf');
+            
+            if (btnTaart && btnStaaf) {
+                if (type === 'pie') {
+                    btnTaart.className = 'btn btn-accent border-0';
+                    btnStaaf.className = 'btn btn-outline-accent border-0';
+                } else {
+                    btnTaart.className = 'btn btn-outline-accent border-0';
+                    btnStaaf.className = 'btn btn-accent border-0';
                 }
             }
+
+            let chartData = {};
+
+            if (type === 'pie') {
+                chartData = {
+                    labels: dataLabels,
+                    datasets: [{
+                        data: dataWaarden,
+                        backgroundColor: kleuren,
+                        borderWidth: 0
+                    }]
+                };
+            } else if (type === 'bar') {
+                let losseStaven = [];
+                for (let i = 0; i < dataLabels.length; i++) {
+                    losseStaven.push({
+                        label: dataLabels[i],
+                        data: [dataWaarden[i]], 
+                        backgroundColor: kleuren[i % kleuren.length],
+                        borderRadius: 4
+                    });
+                }
+                
+                chartData = {
+                    labels: ['Maandelijkse kosten'], 
+                    datasets: losseStaven
+                };
+            }
+
+            huidigeGrafiek = new Chart(ctx, {
+                type: type, 
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { position: type === 'bar' ? 'top' : 'right' } 
+                    }
+                }
+            });
+        }
+
+        tekenGrafiek('pie');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const bewerkKnoppen = document.querySelectorAll('.btn-bewerk');
+            
+            bewerkKnoppen.forEach(knop => {
+                knop.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    
+                    document.getElementById('bewerkForm').action = '/edit_expense/' + id;
+                    document.getElementById('bewerk_omschrijving').value = this.getAttribute('data-oms');
+                    document.getElementById('bewerk_bedrag').value = this.getAttribute('data-bedrag');
+                    document.getElementById('bewerk_frequentie').value = this.getAttribute('data-freq');
+                    document.getElementById('bewerk_categorie').value = this.getAttribute('data-cat');
+                });
+            });
         });
     </script>
 </body>
